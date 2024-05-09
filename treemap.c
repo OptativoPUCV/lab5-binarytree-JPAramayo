@@ -50,24 +50,32 @@ void insertTreeMap(TreeMap * tree, void* key, void * value) {
     if (tree == NULL || key == NULL || value == NULL) return;
     TreeNode *new = (TreeNode *)malloc(sizeof(TreeNode));
     assert(new != NULL);
-
     new = createTreeNode(key, value);
 
-    Pair *pair = searchTreeMap(tree, key);
-    if (pair != NULL) {
-        free(new);
+    if (tree->root->pair->key == NULL) {
+        tree->root = new;
+        tree->current = new;
         return;
     }
-    if (tree->root == NULL) {
-        if (tree->lower_than(key, key) == 1) {
-            new = tree->current->left;
-            new->parent = tree->current;
-            tree->current->left = new;
+    TreeNode *aux = tree->root;
+    while (aux != NULL) {
+        if (tree->lower_than(key, aux->pair->key) == 1) {
+            if (aux->left == NULL) {
+                aux->left = new;
+                new->parent = aux;
+                tree->current = new;
+                return;
+            }
+            aux = aux->left;
         }
         else {
-            new = tree->current->right;
-            new->parent = tree->current;
-            tree->current->right = new;
+            if (aux->right == NULL) {
+                aux->right = new;
+                new->parent = aux;
+                tree->current = new;
+                return;
+            }
+            aux = aux->right;
         }
     }
 }
