@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "treemap.h"
 
 typedef struct TreeNode TreeNode;
-
 
 struct TreeNode {
     Pair* pair;
@@ -48,6 +48,28 @@ TreeMap * createTreeMap(int (*lower_than) (void* key1, void* key2)) {
 
 void insertTreeMap(TreeMap * tree, void* key, void * value) {
     if (tree == NULL || key == NULL || value == NULL) return;
+    TreeNode *new = (TreeNode *)malloc(sizeof(TreeNode));
+    assert(new != NULL);
+
+    new = createTreeNode(key, value);
+
+    Pair *pair = searchTreeMap(tree, key);
+    if (pair != NULL) {
+        free(new);
+        return;
+    }
+    if (tree->root == NULL) {
+        if (tree->lower_than(key, key) == 1) {
+            new = tree->current->left;
+            new->parent = tree->current;
+            tree->current->left = new;
+        }
+        else {
+            new = tree->current->right;
+            new->parent = tree->current;
+            tree->current->right = new;
+        }
+    }
 }
 
 TreeNode * minimum(TreeNode * x){
@@ -82,7 +104,9 @@ Pair * searchTreeMap(TreeMap * tree, void* key) {
         }
         if (tree->lower_than(key, aux->pair->key) == 1)
             aux = aux->left;
-        else aux = aux->right;
+        else
+            aux = aux->right;
+        tree->current = aux;
     }
     return NULL;
 }
