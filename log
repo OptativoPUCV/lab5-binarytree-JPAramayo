@@ -80,3 +80,9 @@ treemap.c:169:14: error: ‘ub’ may be used uninitialized in this function [-W
 cc1: all warnings being treated as errors
 Compilation failed
 bd146e4
+Sat 11 May 2024 06:17:03 PM UTC: 
+ treemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests:  22|2
+total_score: 50/70
+215873c
